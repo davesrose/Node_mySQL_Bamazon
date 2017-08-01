@@ -124,29 +124,30 @@ function lowInventory() { //function for showing and changing low inventory quan
 					inquirer.prompt([{
 						name: "quant",
 						type: "input",
-						message: "Input a number of stock quantity." //
+						message: "Input a number of stock quantity." //prompt for inputting stock quantity
 					}]).then(function(ans) {
-						if (isNaN(ans.quant) === false) {
-							var quant = ans.quant - back;
+						if (isNaN(ans.quant) === false) { //if answer is a number
+							var quant = ans.quant - back; //first set final quantity by subtracting remaining backordered quantity
+							//update products table's item stock quantity
 							connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity: quant},{product_name: itemDetail.product_name}], function(err, res) {
 								if(err)throw err;
-								console.log("-----Quantity has been updated-----");
+								console.log("-----Quantity has been updated-----"); //confirm quantity has been updated
 								inquirer.prompt([
 								{
 									name: "confirm",
 									type: "confirm",
 									message: "Do you want to go to the main menu?"
 								}]).then(function(ans) {
-									if (ans.confirm === true) {
-										start();
+									if (ans.confirm === true) { //if answer is a number
+										start(); //go back to main menu
 									} else {
-										process.exit();
+										process.exit(); //or exit
 									}
 								})
 							});
-						} else {
-							console.log("You must enter a number");
-							lowInventory();
+						} else { //else if answer isn't number
+							console.log("You must enter a number"); //prompt user
+							lowInventory(); //return back to lowInventory function
 						}
 					});
 				}
@@ -155,10 +156,10 @@ function lowInventory() { //function for showing and changing low inventory quan
 	});
 };
 
-function addInventory() {
+function addInventory() { //add inventory function (has same code as update options in the low inventory function, except prompt choices show full list of items)
 	console.log("Add to an item's inventory");
 	var query = "SELECT * FROM products";
-	connection.query(query, function(err, results) {
+	connection.query(query, function(err, results) { //run query for all products
 		if(err)throw err;
 		inquirer.prompt([{
 			name: "products",
@@ -166,39 +167,40 @@ function addInventory() {
 			message: "Select which product you'd like to add inventory to",
 			choices: function() {
 				var itemArr = [];
-				for(var i=0; i < results.length; i++) {
+				for(var i=0; i < results.length; i++) { //run for loop to list all item's names, price, and quantity
 					itemArr.push(results[i].product_name+" -$"+results[i].price+" | Quantity: "+results[i].stock_quantity);
 				}
-				itemArr.push("----Exit-----");
+				itemArr.push("----Exit-----"); //add exit option at end of list
 				return itemArr;
 			}
 		}]).then(function(ans) {
-			if (ans.products === "----Exit-----") {
-				process.exit();
-			} else {
-				var itemName = ans.products.split(' -$')[0];
+			if (ans.products === "----Exit-----") { //if exit was selected
+				process.exit(); //exit
+			} else { //else
+				var itemName = ans.products.split(' -$')[0]; //get selected product name by spliting the -$ characters after
 				for (var z=0; z < results.length; z++) {
-					if (itemName === results[z].product_name) {
-						var itemDetail = results[z];
+					if (itemName === results[z].product_name) { //find and obtain object that has same name as the selected name
+						var itemDetail = results[z]; //create variable for storing selected object
 					}
 				}
-				if (itemDetail.stock_quantity >= 0) {
+				if (itemDetail.stock_quantity >= 0) { //if stock_quantity in object is greater then or equal to 0, there are no backorders
 					console.log("There are "+itemDetail.stock_quantity+" items left.  How many more do you want to buy?");
 					inquirer.prompt([{
 						name: "quant",
 						type: "input",
-						message: "Input a number of stock quantity."
+						message: "Input a number of stock quantity." //prompt for inputing new stock quantity
 					}]).then(function(ans) {
-						if (isNaN(ans.quant) === false) {
-							var quant = parseInt(ans.quant)+parseInt(itemDetail.stock_quantity);
+						if (isNaN(ans.quant) === false) { //if answer is number
+							var quant = parseInt(ans.quant)+parseInt(itemDetail.stock_quantity); //add answer's quantity to the database's item quantity
+							//then update the products item quantity
 							connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity: quant},{product_name: itemDetail.product_name}], function(err, res) {
 								if(err)throw err;
-								console.log("-----Quantity has been updated-----");
+								console.log("-----Quantity has been updated-----"); //alert that it's been updated
 								inquirer.prompt([
 								{
 									name: "confirm",
 									type: "confirm",
-									message: "Do you want to go to the main menu?"
+									message: "Do you want to go to the main menu?" //confirm prompt for going back to main menu or exiting
 								}]).then(function(ans) {
 									if (ans.confirm === true) {
 										start();
@@ -207,40 +209,41 @@ function addInventory() {
 									}
 								})
 							});
-						} else {
-							console.log("You must enter a number");
-							lowInventory();
+						} else { //else answer is not a number
+							console.log("You must enter a number"); //log that user needs to input number
+							lowInventory(); //go back to start of function
 						}
 					});
-				} else {
-					var back = itemDetail.stock_quantity * -1;
-					console.log("There are currently "+back+" stock items backordered.  Be sure to order more then that.")
+				} else { //else selected item's stock quantity is less then 0
+					var back = itemDetail.stock_quantity * -1; //find remaining quantity that's backordered
+					console.log("There are currently "+back+" stock items backordered.  Be sure to order more then that.") //prompt user that remaining stock is backordered
 					inquirer.prompt([{
 						name: "quant",
 						type: "input",
-						message: "Input a number of stock quantity."
+						message: "Input a number of stock quantity." //prompt for inputting stock quantity
 					}]).then(function(ans) {
-						if (isNaN(ans.quant) === false) {
-							var quant = ans.quant - back;
+						if (isNaN(ans.quant) === false) { //if answer is a number
+							var quant = ans.quant - back; //subtract backordered quantity with answer's quantity
+							//update products table with new quantity value
 							connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity: quant},{product_name: itemDetail.product_name}], function(err, res) {
 								if(err)throw err;
-								console.log("-----Quantity has been updated-----");
+								console.log("-----Quantity has been updated-----"); //confirm that quantity has been updated
 								inquirer.prompt([
 								{
 									name: "confirm",
 									type: "confirm",
-									message: "Do you want to go to the main menu?"
+									message: "Do you want to go to the main menu?" //run prompt asking if user wants to go back to main menu
 								}]).then(function(ans) {
-									if (ans.confirm === true) {
+									if (ans.confirm === true) { //if true, then go back to start
 										start();
-									} else {
+									} else { //else exit
 										process.exit();
 									}
 								})
 							});
-						} else {
-							console.log("You must enter a number");
-							lowInventory();
+						} else { //else answer wasn't a number
+							console.log("You must enter a number"); //alert user that answer must be number
+							lowInventory(); //go back to start of function
 						}
 					});
 				}
@@ -249,27 +252,28 @@ function addInventory() {
 	});
 };
 
-function newDepartment(department) {
-	var newDepartment = false;
-	connection.query("SELECT * FROM departments", function(err, res) {
+function newDepartment(department) { //new department function for if new item's department also is a new department
+	var newDepartment = false; //new boolean for checking to see if department
+	connection.query("SELECT * FROM departments", function(err, res) { //query for all department items
 		if(err)throw err;
-		for(var i=0; i < res.length; i++) {
-			if (department !== res[i].department_name) {
-				newDepartment = true;
+		for(var i=0; i < res.length; i++) { //for loop that goes through departments table
+			if (department !== res[i].department_name) { //if input's department does not match any of the database's department names
+				newDepartment = true; //set boolean to true
 			} else {
-				newDepartment = false;
+				newDepartment = false; //else keep boolean false
 			}
 		}
-		if (newDepartment === true) {
+		if (newDepartment === true) { //if boolean is true, insert new row with department name, and initialize over head costs as 0, product sales as 0
 			connection.query("INSERT INTO departments SET ?", {department_name: department, over_head_costs: 0, product_sales: 0}, function(err, response) {
 				if(err)throw err;
+				//alert user that since it's a new department, the supervisor will have to review.
 				console.log(department+" is a new department.  The supervisor will have to figure the new over head costs for this new department.")
 			})
 		}
 	})
 }
 
-function addItem() {
+function addItem() { //add item function
 	console.log("Add a new item to sell");
 	inquirer.prompt([{
 		name: "name",

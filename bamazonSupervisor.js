@@ -143,6 +143,14 @@ function createOverHead(response, table) {
 			var profit = parseInt(sales) - parseInt(overHead);
 			deptTable.push([id, name, "$"+overHead, "$"+sales, "$"+profit]);
 			console.log(deptTable.toString());
+			var prodTable = new Table({head: ["item_id", "product_name", "department_name", "price", "stock_quantity"]})
+			connection.query("SELECT * FROM products WHERE department_name = ?", name, function(err, res) {
+				if(err)throw err;
+				for (var e=0; e < res.length; e++) {
+					prodTable.push([res[e].item_id, res[e].product_name, res[e].department_name, res[e].price, res[e].stock_quantity],)
+				}
+				console.log(prodTable.toString());
+			})
 			console.log("-------------");
 			inquirer.prompt([{
 				name: "change",
