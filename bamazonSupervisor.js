@@ -148,13 +148,13 @@ function createOverHead(res, response, table) { //create over head costs functio
 			var profit = parseInt(sales) - parseInt(overHead); //create profit variable by subtracting sales with overhead
 			deptTable.push([id, name, "$"+overHead, "$"+sales, "$"+profit]); //create table row with array from above variables
 			console.log(deptTable.toString()); //display selected department table
-			console.log("Item's in the selected department:");
+			console.log("Item(s) in the selected department:");
 			//create new product table
 			var prodTable = new Table({head: ["item_id", "product_name", "department_name", "price", "stock_quantity"]})
 			for (var e=0; e < res.length; e++) { //for loop using the passed product and department joins
 				if(name === res[e].department_name) { //loop for finding selected department's name with object's name
 					//if equal, push that product's detail in the product table
-					prodTable.push([res[e].item_id, res[e].product_name, res[e].department_name, res[e].price, res[e].stock_quantity],)
+					prodTable.push([res[e].item_id, res[e].product_name, res[e].department_name, "$"+res[e].price, res[e].stock_quantity+" units"],)
 				}
 			}
 			console.log(prodTable.toString()); //display the product details in the same department
