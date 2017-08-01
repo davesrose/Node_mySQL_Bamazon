@@ -21,31 +21,32 @@ function start(response, table) { //initial start function that creates departme
 		head: ["department_id", "department_name", "over_head_costs", "product_sales", "total_profit"],
 		// style: {head: []}
 	});
-	// connection.query("SELECT * FROM departments INNER JOIN products ON departments.department_name=products.department_name", function(err, response) {
-	connection.query("SELECT * FROM departments", function(err, response) { //grabbing all items from departments database
-		// console.log(response);
-		if(err)throw err;
-		var tableArr = []; //new table array
-		for (var i=0; i < response.length; i++) { //for loop that first creates variables from the database item
-			var id = response[i].department_id;
-			var name = response[i].department_name;
-			var overHead = response[i].over_head_costs;
-			var sales = response[i].product_sales;
-			if (sales === undefined) { //if sales hasn't been generated yet, assign as 0
-				sales = 0;
-			}
-			var profit = parseInt(sales) - parseInt(overHead); //get profit by subtracting sales and over heaad
-			table.push(
-				[id, name, "$"+overHead, "$"+sales, "$"+profit], //push variables into table's next line
-			)
-		};
-		// console.log(table.toString());
-		main(response, table); //run main function that passes departments database and generated table
+	connection.query("SELECT * FROM departments INNER JOIN products ON departments.department_name=products.department_name", function(err, res) {
+		connection.query("SELECT * FROM departments", function(err, response) { //grabbing all items from departments database
+			// console.log(response);
+			if(err)throw err;
+			var tableArr = []; //new table array
+			for (var i=0; i < response.length; i++) { //for loop that first creates variables from the database item
+				var id = response[i].department_id;
+				var name = response[i].department_name;
+				var overHead = response[i].over_head_costs;
+				var sales = response[i].product_sales;
+				if (sales === undefined) { //if sales hasn't been generated yet, assign as 0
+					sales = 0;
+				}
+				var profit = parseInt(sales) - parseInt(overHead); //get profit by subtracting sales and over heaad
+				table.push(
+					[id, name, "$"+overHead, "$"+sales, "$"+profit], //push variables into table's next line
+				)
+			};
+			// console.log(table.toString());
+			main(res, response, table); //run main function that passes departments database and generated table
+		});
 	});
 
 };
 
-function main(response, table) { //main function that displays main menu
+function main(res, response, table) { //main function that displays main menu
 	inquirer.prompt([{
 		name: "choice",
 		type: "list",
@@ -71,7 +72,7 @@ function main(response, table) { //main function that displays main menu
 		} else if (ans.choice === "Create New Department") {
 			createDepartment(response, table); //create new department function
 		} else if (ans.choice === "Visit a new department's over head cost") {
-			createOverHead(response, table); //create new over head costs function
+			createOverHead(res, response, table); //create new over head costs function
 		} else if (ans.choice === "----Exit----") {
 			process.exit() //exit
 		};
@@ -96,7 +97,7 @@ function returnMenu() { //function that asks user if they want to return to main
 	})
 };
 
-function createOverHead(response, table) { //create over head costs function
+function createOverHead(res, response, table) { //create over head costs function
 	for (var i=0; i < response.length; i++) { //loop for alerting supervisor if a department currently has no over head costs figured yet
 		if (response[i].over_head_costs === 0) {
 			console.log(response[i].over_head_costs+" currently does not have any over head costs yet.")
@@ -147,14 +148,16 @@ function createOverHead(response, table) { //create over head costs function
 			var profit = parseInt(sales) - parseInt(overHead); //create profit variable by subtracting sales with overhead
 			deptTable.push([id, name, "$"+overHead, "$"+sales, "$"+profit]); //create table row with array from above variables
 			console.log(deptTable.toString()); //display selected department table
-			// var prodTable = new Table({head: ["item_id", "product_name", "department_name", "price", "stock_quantity"]})
-			// connection.query("SELECT * FROM products WHERE department_name = ?", name, function(err, res) {
-			// 	if(err)throw err;
-			// 	for (var e=0; e < res.length; e++) {
-			// 		prodTable.push([res[e].item_id, res[e].product_name, res[e].department_name, res[e].price, res[e].stock_quantity],)
-			// 	}
-			// 	console.log(prodTable.toString());
-			// })
+			console.log("Item's in the selected department:");
+			//create new product table
+			var prodTable = new Table({head: ["item_id", "product_name", "department_name", "price", "stock_quantity"]})
+			for (var e=0; e < res.length; e++) { //for loop using the passed product and department joins
+				if(name === res[e].department_name) { //loop for finding selected department's name with object's name
+					//if equal, push that product's detail in the product table
+					prodTable.push([res[e].item_id, res[e].product_name, res[e].department_name, res[e].price, res[e].stock_quantity],)
+				}
+			}
+			console.log(prodTable.toString()); //display the product details in the same department
 			console.log("-------------"); //rendering line break
 			inquirer.prompt([{
 				name: "change",
