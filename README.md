@@ -64,3 +64,5 @@ Finally, to make sure tables keep being updated.  The manager has added cutlery 
 
 For future review of this project, I'd like the supervisor to also get a detailed view of the selected department's products as well.  I have been having problems getting a second cli-table to stay inline in the command prompt when it's being pushed from a mysql query.  I have tried one response using join inner department_name, but it was getting too complicated for the given time.
 
+Note: after homework deadline, I was able to sleep on the solution for the supervisor CLI.  I've been able to get the detailed product table to be correctly rendered with the department view.  This is done by having an initial query with inner join of departments and products table (which is passed as "res").  The departments query is nested inside (as "response"), and department table is generated inside (as "table").  It appears new tables can correctly be displayed in the command prompt if they use saved objects instead of new queries.
+
