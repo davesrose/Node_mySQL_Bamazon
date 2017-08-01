@@ -2,7 +2,7 @@ I followed most of the homework, accept I thought Bamazon should be more like Am
 
 node bamazonCustomer.js:
 
-User first selects product:
+User first selects product:--------------------------------------------------------
 ![Image of screenshot1](/images/01.jpg)
 
 They see a detailed description, and they chose how many quanitities of the item they want:
@@ -14,5 +14,5 @@ If they don't enter a number, they'll be prompted to try again:
 If I buy 10 books of Girl in the Spider's Web for presents, the total price is shown, along with stock quantity change.  The prompt then goes back to the main menu:
 ![Image of screenshot4](/images/04.jpg)
 
-Proof of products database changing:
+Proof of products database changing (Girl in the Spider's Web is now 35):
 ![Image of screenshot5](/images/05.jpg)
