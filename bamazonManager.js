@@ -275,7 +275,7 @@ function newDepartment(department) { //new department function for if new item's
 
 function addItem() { //add item function
 	console.log("Add a new item to sell");
-	inquirer.prompt([{
+	inquirer.prompt([{ //prompt for adding all item's fields
 		name: "name",
 		type: "input",
 		message: "Input item name"
@@ -292,9 +292,9 @@ function addItem() { //add item function
 		type: "input",
 		message: "Input the item's quantity"
 	}]).then(function(ans) {
-		var department = ans.department;
-		newDepartment(department);
-		connection.query("INSERT INTO products SET ?",
+		var department = ans.department; //create department variable for corresponding answered department name
+		newDepartment(department); //run new department function to check if department is new
+		connection.query("INSERT INTO products SET ?", //insert new item in the products table with answered fields
 			{
 				product_name: ans.name,
 				department_name: ans.department,
@@ -303,16 +303,15 @@ function addItem() { //add item function
 			}
 			, function(err, res) {
 			if(err)throw err;
-			// console.log(res);
-			var object = res.insertId;
-			connection.query("SELECT * FROM products WHERE item_id = ?", object, function(err, response) {
+			var object = res.insertId; //obtain a new object's id with new field's ID
+			connection.query("SELECT * FROM products WHERE item_id = ?", object, function(err, response) { //grab full details of new object's ID
 				if(err)throw err;
-				console.log("ADDED:----\n");
+				console.log("ADDED:----\n"); //confirm added with full details of new ID
 				console.log("ID: "+response[0].item_id+" | Name: "+response[0].product_name+" | Department: "+response[0].department_name+" | Price: $"+response[0].price+" | Quantity: "+response[0].stock_quantity);
 				inquirer.prompt([{
 					name: "confirm",
 					type: "confirm",
-					message: "Do you want to return to the main menu?"
+					message: "Do you want to return to the main menu?" //ask user if they want to return to main menu
 				}]).then(function(answer) {
 					if (answer.confirm === true) {
 						start();
@@ -325,24 +324,24 @@ function addItem() { //add item function
 	})
 };
 
-function start() {
+function start() { //begining function
 	inquirer.prompt([
 	{
 		name: "choices",
 		type: "list",
-		message: "Select what you want to do:",
+		message: "Select what you want to do:", //select which item you want to do
 		choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "----Exit----"]
 	}]).then(function(ans) {
 		if (ans.choices === "View Products for Sale") {
-			viewItems();
+			viewItems(); //run view function
 		} else if (ans.choices === "View Low Inventory") {
-			lowInventory();
+			lowInventory(); //run low inventory function
 		} else if (ans.choices === "Add to Inventory") {
-			addInventory();
+			addInventory(); //run add inventory function
 		} else if (ans.choices === "Add New Product") {
-			addItem();
+			addItem(); //run add item function
 		} else if (ans.choices === "----Exit----") {
-			process.exit();
+			process.exit(); //else exit
 		}
 	});
 };
