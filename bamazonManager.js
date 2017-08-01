@@ -259,7 +259,7 @@ function newDepartment(department) {
 			}
 		}
 		if (newDepartment === true) {
-			connection.query("INSERT INTO departments SET ?", {department_name: department, over_head_costs: 0}, function(err, response) {
+			connection.query("INSERT INTO departments SET ?", {department_name: department, over_head_costs: 0, product_sales: 0}, function(err, response) {
 				if(err)throw err;
 				console.log(department+" is a new department.  The supervisor will have to figure the new over head costs for this new department.")
 			})

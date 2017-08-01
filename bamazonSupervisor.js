@@ -201,7 +201,7 @@ function createDepartment(response, table) {
 					console.log("It must be a number");
 					createDepartment(response, table);
 				} else {
-					connection.query("INSERT INTO departments SET ?", {department_name: newDept, over_head_costs: overHead}, function(err, response) {
+					connection.query("INSERT INTO departments SET ?", {department_name: newDept, over_head_costs: overHead, product_sales: 0}, function(err, response) {
 						if(err)throw err;
 					});
 					console.log("Department: "+newDept+" has been added, with an over head cost of: "+overHead);
