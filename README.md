@@ -16,3 +16,9 @@ If I buy 10 books of Girl in the Spider's Web for presents, the total price is s
 
 Proof of products database changing (Girl in the Spider's Web is now 35):
 ![Image of screenshot5](/images/05.jpg)
+
+I've ordered 2 more Avatar Blu-rays then what's in stock.  I'm prompted that 2 are backordered, and future orders are refused.
+![Image of screenshot6](/images/06.jpg)
+
+Now if I try ordering Avatar again, I'm prompted that the stock is empty (for manager/supervisor views of the database, it will show as a negative number, and they'll be prompted of backorders)
+![Image of screenshot7](/images/07.jpg)
