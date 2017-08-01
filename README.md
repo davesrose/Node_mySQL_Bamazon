@@ -15,4 +15,4 @@ If I buy 10 books of Girl in the Spider's Web for presents, the total price is s
 ![Image of screenshot4](/images/04.jpg)
 
 Proof of products database changing:
-![Image of screenshot4](/images/04.jpg)
+![Image of screenshot5](/images/05.jpg)
