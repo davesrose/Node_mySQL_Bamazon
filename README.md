@@ -1,3 +1,5 @@
+This is a project using Node.js and mySQL to create a database with customer, manager, and supervisor tables.
+
 I followed most of the homework, accept I thought Bamazon should be more like Amazon.  If a customer orders more then what's in stock, they'll be alerted to how many are backordered.  Further orders are prevented.  Included are examples of each interface:
 
 **node bamazonCustomer.js:**
